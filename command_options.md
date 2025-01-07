@@ -8,7 +8,7 @@
 | -i           | --in-file             | `<IN_FILE>`         | Input files to process. `.tsv` files use tab as the delimiter.                                                                                          |
 | -q           | --query               | `<QUERY>`           | SQL query string to execute.                                                                                                                            |
 | -s           | --source              | `<SOURCE>`          | Path to a file containing the SQL query.                                                                                                                |
-| -h           | --help                |                     | how help message and exit.                                                                                                                              |
+| -h           | --help                |                     | Show help message and exit.                                                                                                                             |
 |              | --in-comment          | `<IN_COMMENT>`      | Comment character for parsing CSV (single byte). If the start of a record begins with the byte given here, then that line is ignored by the CSV parser. |
 |              | --in-delimiter        | `<IN_DELIMITER>`    | Delimiter for input CSV (single byte, e.g., `,` or `\t`)<br>Default: `,`.                                                                               |
 |              | --in-escape           | `<IN_ESCAPE>`       | Escape character for parsing CSV (single byte).                                                                                                         |

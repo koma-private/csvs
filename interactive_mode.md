@@ -1,7 +1,7 @@
 # Interactive Mode
 
 - If neither `--query` nor` --source` is specified, **csvs** starts in *interactive mode*.
-- While interactive mode does not support special SQLite commands (e.g., `.schema`, `.tables`), it allows you to:
+- While *interactive mode* does not support special SQLite commands (e.g., `.schema`, `.tables`), it allows you to:
   - View a list of imported tables.
   - Quickly preview table contents.
   - Save the result of SQL query to a file.
@@ -56,3 +56,14 @@
 | CTRL + Z        |               | Undo the last action.                                                                                                                                                                           |
 | CTRL + Y        |               | Redo the last undone action.                                                                                                                                                                    |
 | CTRL + V        |               | Paste content from the clipboard.                                                                                                                                                               |
+
+### SQL Result
+
+| Key Combination | Alt.     | Description                    |
+|-----------------|----------|--------------------------------|
+| Up              | CTRL + P | Move the cursor up.            |
+| Down            | CTRL + N | Move the cursor down.          |
+| PageUp          |          | Scroll the content up.         |
+| PageDown        |          | Scroll the content down.       |
+| Home            |          | Jump to the top of the result. |
+| End             |          | Jump to the end of the result. |

@@ -1,15 +1,25 @@
 # Build
 
-- [Build](#build)
-    - [Prerequisite](#prerequisite)
+- [Prerequisite](#prerequisite)
+- [With `cargo`](#with-cargo)
+- [Build from source codes](#build-from-source-codes)
     - [Windows (MSVC)](#windows-msvc)
     - [macOS (Universal Binary)](#macos-universal-binary)
     - [Linux (musl libc)](#linux-musl-libc)
-- [Directory Structure](#directory-structure)
 
-### Prerequisite
+## Prerequisite
 
 You must have [Rust program language](https://www.rust-lang.org/tools/install) installed.
+
+## With `Cargo`
+
+To install **csvs** directly from crates.io:
+
+```shell
+cargo install csvs
+```
+
+## From source codes
 
 ### Windows (MSVC)
 
@@ -26,9 +36,11 @@ build-win.cmd
 ### macOS (Universal Binary)
 
 1. Install Xcode command-line tools:
+
 ```shell
 xcode-select --install
 ```
+
 2. Install the Rust targets `x86_64-apple-darwin` and `aarch64-apple-darwin`.
 3. Run the build script:
 
@@ -48,10 +60,3 @@ xcode-select --install
 ```
 
 3. The executable will be generated in `target-docker/release`.
-
-# Directory structure
-
-| Directory             | Description                                                                                       |
-|-----------------------|---------------------------------------------------------------------------------------------------|
-| `/app`                | Source root of `csvs` program                                                                     |
-| `/tui-realm-textarea` | Modified version of the [tui-realm-textarea](https://github.com/veeso/tui-realm-textarea) library |

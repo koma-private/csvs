@@ -128,8 +128,8 @@ cat ./data/address.csv | csvs -q 'SELECT "city","town","phone" FROM "stdin"' > p
 csvs -i ./left.csv -i ./right.tsv -q 'SELECT * FROM "left.csv" AS l JOIN "right.tsv" AS r ON l."name"=r."name"'
 ```
 
-- Use standard SQLite functions (e.g., `UPPER()`, `LOWER()`, `LENGTH()`, `COUNT()`, `SUM()`).<br>Example: Export query
-  results to a SQLite database file with `--out-database`:
+- Use standard SQLite functions (e.g., `UPPER()`, `LOWER()`, `LENGTH()`, `COUNT()`, `SUM()`).<br>Example: Export
+  the generated tables to a SQLite database file with `--out-database`:
 
 ```shell
 csvs -i people.csv -q 'SELECT "city",COUNT(*) FROM "people.csv" GROUP BY "city" ORDER BY COUNT(*) DESC' --out-database out.db

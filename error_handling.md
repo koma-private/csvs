@@ -14,3 +14,7 @@
 | `Error: CSV error: ** found record with ** fields, but the previous record has ** fields` | Inconsistent field counts the CSV data due to formatting issues.                                    | Correct the CSV file to ensure consistent field counts or use `--in-flexible` to bypass it. |
 | `Error: sql parser error: **`                                                             | Invalid SQL query syntax not compatible with SQLite’s dialect.                                      | Correct the SQL syntax and ensure compatibility with SQLite.                                |
 | Garbled characters are displayed                                                          | The `--in-file` has an undetectable or unsupported character encoding.                              | Verify and correct the file's encoding to a supported format like UTF-8.                    |
+
+### General Notes
+- **csvs** provides detailed error messages whenever possible to help diagnose issues.
+- For advanced debugging, check the output logs if `--out-log` is specified.
