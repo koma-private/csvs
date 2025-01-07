@@ -2,7 +2,7 @@
 
 - [Prerequisite](#prerequisite)
 - [With `cargo`](#with-cargo)
-- [Build from source codes](#build-from-source-codes)
+- [Build from source codes](#from-source-codes)
     - [Windows (MSVC)](#windows-msvc)
     - [macOS (Universal Binary)](#macos-universal-binary)
     - [Linux (musl libc)](#linux-musl-libc)
