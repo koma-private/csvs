@@ -1,0 +1,50 @@
+[package]
+authors = ["Masanori KOMAGAMINE"]
+categories = ["command-line-utilities"]
+description = "csvs (CSV Sql) is a command-line tool designed to streamline SQL queries on CSV or TSV files using an embedded SQLite engine."
+edition = "2021"
+homepage = "https://github.com/koma-private/csvs"
+include = ["assets/**/*", "src/**/*", "LICENSE", "*.md", "*.sh", "*.cmd", "*.Dockerfile"]
+keywords = ["csv", "tsv", "sql", "cli", "parser"]
+license = "MIT"
+name = "csvs"
+readme = "README.md"
+repository = "https://github.com/koma-private/csvs"
+version = "1.0.0"
+
+[features]
+default = []
+
+[dependencies]
+anyhow = { version = "1.0.95" }
+chardetng = { version = "0.1.17" }
+clap = { version = "4.5.23", features = ["derive"] }
+clap-help = { version = "1.3.1" }
+csv = { version = "1.3.1" }
+encoding_rs = { version = "0.8.35" }
+encoding_rs_rw = { version = "0.4.2" }
+indicatif = { version = "0.17.9" }
+lazy-regex = { version = "3.4.1" }
+r2d2 = { version = "0.8.10" }
+r2d2_sqlite = { version = "0.25.0" }
+rusqlite = { version = "0.32.1", features = ["bundled"] }
+smashquote = { version = "0.1.2" }
+sqlparser = { version = "0.53.0" }
+tracing = { version = "0.1.41" }
+tracing-logfmt = { version = "0.3.5" }
+tracing-subscriber = { version = "0.3.19" }
+tui-realm-stdlib = { version = "2.0.1" }
+tui-realm-textarea = { version = "2.0.0", features = ["clipboard"] }
+tuirealm = { version = "2.0.3" }
+
+[profile.release]
+strip = true
+lto = true
+
+# see https://users.rust-lang.org/t/how-to-share-external-packages-between-projects/94324/4
+[profile.dev]
+debug = 1 # less precise locations
+
+[profile.dev.package."*"]
+debug = false # no debug symbols for deps
+opt-level = 2 # this makes their code smaller too

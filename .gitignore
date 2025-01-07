@@ -1,0 +1,9 @@
+*.csv
+*.db
+*.sql
+.env
+.env.*
+/dist-mac
+/target
+/target-*
+.DS_Store
