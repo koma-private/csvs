@@ -13,45 +13,66 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-linux:
+    name: Release - ${{ matrix.platform.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - target: aarch64-unknown-linux-musl
+            artifact: csvs_linux_aarch64
+          - target: x86_64-unknown-linux-musl
+            artifact: csvs_linux_x86_64
+    steps:
+      - uses: actions/checkout@master
+      - run: sudo apt install -qq -y gcc-aarch64-linux-gnu musl-dev --no-install-recommends
+      - uses: dtolnay/rust-toolchain@stable
+      - run: rustup target add ${{ matrix.platform.target }}
+      - run: cargo build --release --target ${{ matrix.platform.target }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform.artifact }}
+          path: |
+            target/${{ matrix.platform.target }}/release/csvs
+            *.md
+            LICENSE
+  build-macos:
+    name: Release - universal-apple-darwin
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: dtolnay/rust-toolchain@stable
+      - run: rustup target add aarch64-apple-darwin
+      - run: rustup target add x86_64-apple-darwin
+      - run: cargo build --release --target aarch64-apple-darwin
+      - run: cargo build --release --target x86_64-apple-darwin
+      - run: lipo -create -output target/release/csvs target/aarch64-apple-darwin/csvs target/x86_64-apple-darwin/csvs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: csvs_macos_universal
+          path: |
+            target/release/csvs
+            *.md
+            LICENSE
+  build-windows:
     name: Release - ${{ matrix.platform.target }}
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
         platform:
-          - runner: ubuntu-latest
-            target: aarch64-unknown-linux-musl
-            executable: csvs
-            artifact: csvs_linux_aarch64
-          - runner: ubuntu-latest
-            target: x86_64-unknown-linux-musl            
-            executable: csvs
-            artifact: csvs_linux_x86_64
-          - runner: macos-latest
-            target: aarch64-apple-darwin            
-            executable: csvs
-            artifact: csvs_macos_aarch64
-          - runner: macos-latest
-            target: x86_64-apple-darwin          
-            executable: csvs
-            artifact: csvs_macos_x86_64
-          - runner: windows-latest
-            target: aarch64-pc-windows-msvc          
-            executable: csvs.exe
+          - target: aarch64-pc-windows-msvc          
             artifact: csvs_windows_aarch64
-          - runner: windows-latest
-            target: x86_64-pc-windows-msvc          
-            executable: csvs.exe
+          - target: x86_64-pc-windows-msvc          
             artifact: csvs_windows_x86_64
     steps:
       - uses: actions/checkout@master
       - uses: dtolnay/rust-toolchain@stable
       - run: rustup target add ${{ matrix.platform.target }}
-      - run: cargo build --release --target ${{ matrix.platform.target }} --target-dir ${{ matrix.platform.runner }}
+      - run: cargo build --release --target ${{ matrix.platform.target }}
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform.artifact }}
           path: |
-            ${{ matrix.platform.runner }}/${{ matrix.platform.target }}/release/${{ matrix.platform.executable }}
+            target/${{ matrix.platform.target }}/release/csvs.exe
             *.md
             LICENSE
