@@ -14,44 +14,44 @@ env:
 
 jobs:
   build:
-    name: Release - ${{ matrix.platform.os }} ${{ matrix.platform.arch }}-${{ matrix.platform.target }}
+    name: Release - ${{ matrix.platform.target }}
     runs-on: ${{ matrix.platform.os }}-latest
     strategy:
       matrix:
         platform:
-          - os: linux
-            arch: aarch64
-            target: unknown-linux-musl
+          - runner: ubuntu-latest
+            target: aarch64-unknown-linux-musl
             executable: csvs
-          - os: linux
-            arch: x86_64
-            target: unknown-linux-musl            
+            artifact: csvs_linux_aarch64
+          - runner: ubuntu-latest
+            target: x86_64-unknown-linux-musl            
             executable: csvs
-          - os: macos
-            arch: aarch64
-            target: apple-darwin            
+            artifact: csvs_linux_x86_64
+          - runner: macos-latest
+            target: aarch64-apple-darwin            
             executable: csvs
-          - os: macos
-            arch: x86_64
-            target: apple-darwin          
+            artifact: csvs_macos_aarch64
+          - runner: macos-latest
+            target: x86_64-apple-darwin          
             executable: csvs
-          - os: windows
-            arch: aarch64
-            target: pc-windows-msvc          
+            artifact: csvs_macos_x86_64
+          - runner: windows-latest
+            target: aarch64-pc-windows-msvc          
             executable: csvs.exe
-          - os: windows
-            arch: x86_64
-            target: pc-windows-msvc          
+            artifact: csvs_windows_aarch64
+          - runner: windows-latest
+            target: x86_64-pc-windows-msvc          
             executable: csvs.exe
+            artifact: csvs_windows_x86_64
     steps:
       - uses: actions/checkout@master
       - uses: dtolnay/rust-toolchain@stable
-      - run: rustup target add ${{ matrix.platform.arch }}-${{ matrix.platform.target }}
-      - run: cargo build --release --target ${{ matrix.platform.arch }}-${{ matrix.platform.target }} --target-dir target-${{ matrix.platform.os }}
+      - run: rustup target add ${{ matrix.platform.target }}
+      - run: cargo build --release --target ${{ matrix.platform.target }} --target-dir ${{ matrix.platform.runner }}
       - uses: actions/upload-artifact@v4
         with:
-          name: csvs_${{ matrix.platform.os }}_${{ matrix.platform.arch }}
+          name: ${{ matrix.platform.artifact }}
           path: |
-            target-${{ matrix.platform.os }}/${{ matrix.platform.arch }}-${{ matrix.platform.target }}/release/${{ matrix.platform.executable }}
+            ${{ matrix.platform.runner }}/${{ matrix.platform.target }}/release/${{ matrix.platform.executable }}
             *.md
             LICENSE
