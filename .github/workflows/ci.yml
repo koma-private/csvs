@@ -13,44 +13,44 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  release:
-    name: Release - ${{ matrix.platform.os-name }}
+  build:
+    name: Release - ${{ matrix.platform.target }}
+    runs-on: ${{ matrix.platform.os }}-latest
     strategy:
       matrix:
         platform:
-          - os-name: Linux-aarch64
-            runs-on: ubuntu-latest
-            target: aarch64-unknown-linux-musl
-          - os-name: Linux-x86_64
-            runs-on: ubuntu-latest
-            target: x86_64-unknown-linux-musl
-          - os-name: macOS-aarch64
-            runs-on: macOS-latest
-            target: aarch64-apple-darwin
-          - os-name: macOS-x86_64
-            runs-on: macOS-latest
-            target: x86_64-apple-darwin
-          - os-name: Windows-aarch64
-            runs-on: windows-latest
-            target: aarch64-pc-windows-msvc
-          - os-name: Windows-x86_64
-            runs-on: windows-latest
-            target: x86_64-pc-windows-msvc
-    runs-on: ${{ matrix.platform.runs-on }}
+          - os: linux
+            arch: aarch64
+            target: unknown-linux-musl
+            executable: csvs
+          - os: linux
+            arch: x86_64
+            target: unknown-linux-musl            
+            executable: csvs
+          - os: macos
+            arch: aarch64
+            target: apple-darwin            
+            executable: csvs
+          - os: macos
+            arch: x86_64
+            target: apple-darwin          
+            executable: csvs
+          - os: windows
+            arch: aarch64
+            target: pc-windows-msvc          
+            executable: csvs.exe
+          - os: windows
+            arch: x86_64
+            target: pc-windows-msvc          
+            executable: csvs.exe
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build binary
-        uses: houseabsolute/actions-rust-cross@v0
+      - uses: actions/checkout@master
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo build --release --target ${{ matrix.arch }}-${{ matrix.target }} --target-dir target-${{ matrix.os }}
+      - uses: actions/upload-artifact@v4
         with:
-          command: ${{ matrix.platform.command }}
-          target: ${{ matrix.platform.target }}
-          args: "--locked --release"
-          strip: true
-
-      - name: Publish artifacts and release
-        uses: houseabsolute/actions-rust-release@v0
-        with:
-          executable-name: csvs
-          target: ${{ matrix.platform.target }}
+          name: csvs_${{ matrix.os }}_${{ matrix.arch }}
+          path: |
+            target-${{ matrix.os }}/${{ matrix.arch }}-${{ matrix.target }}/release/${{ matrix.executable }}
+            *.md
+            LICENSE
