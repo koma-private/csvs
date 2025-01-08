@@ -21,14 +21,16 @@ jobs:
         platform:
           - target: aarch64-unknown-linux-musl
             artifact: csvs_linux_aarch64
+            vars: CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc CC=aarch64-linux-gnu-gcc
           - target: x86_64-unknown-linux-musl
             artifact: csvs_linux_x86_64
+            vars: CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=x86_64-linux-musl-gcc CC=x86_64-linux-musl-gcc
     steps:
       - uses: actions/checkout@master
       - run: sudo apt install -qq -y gcc-aarch64-linux-gnu musl-dev --no-install-recommends
       - uses: dtolnay/rust-toolchain@stable
       - run: rustup target add ${{ matrix.platform.target }}
-      - run: cargo build --release --target ${{ matrix.platform.target }}
+      - run: ${{ matrix.platform.vars }} cargo build --release --target ${{ matrix.platform.target }}
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform.artifact }}
@@ -46,7 +48,7 @@ jobs:
       - run: rustup target add x86_64-apple-darwin
       - run: cargo build --release --target aarch64-apple-darwin
       - run: cargo build --release --target x86_64-apple-darwin
-      - run: lipo -create -output target/release/csvs target/aarch64-apple-darwin/csvs target/x86_64-apple-darwin/csvs
+      - run: lipo -create -output target/release/csvs target/aarch64-apple-darwin/release/csvs target/x86_64-apple-darwin/release/csvs
       - uses: actions/upload-artifact@v4
         with:
           name: csvs_macos_universal
