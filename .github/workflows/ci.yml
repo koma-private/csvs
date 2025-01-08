@@ -46,6 +46,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - uses: dtolnay/rust-toolchain@stable
+      - run: rustup target add ${{ matrix.platform.arch }}-${{ matrix.platform.target }}
       - run: cargo build --release --target ${{ matrix.platform.arch }}-${{ matrix.platform.target }} --target-dir target-${{ matrix.platform.os }}
       - uses: actions/upload-artifact@v4
         with:
