@@ -14,44 +14,51 @@ env:
 
 jobs:
   build-linux:
-    name: Release - ${{ matrix.platform.tag }}
+    name: Release - ${{ matrix.platform.target }}
     runs-on: ubuntu-latest
     container: ghcr.io/blackdex/rust-musl:${{ matrix.platform.tag }}
     strategy:
       matrix:
         platform:
-          - tag: aarch64-musl-stable
+          - target: aarch64-unknown-linux-musl
+            tag: aarch64-musl-stable
             artifact: csvs_linux_aarch64
-          - tag: x86_64-musl-stable
+          - target: x86_64-unknown-linux-musl
+            tag: x86_64-musl-stable
             artifact: csvs_linux_x86_64
     steps:
       - uses: actions/checkout@master
       - run: cargo build --release
+      - run: |
+          mkdir ${{ matrix.platform.artifact }}
+          cp *.md ${{ matrix.platform.artifact }}
+          cp target/${{ matrix.platform.target }}/release/csvs ${{ matrix.platform.artifact }}
+          tar czf ${{ matrix.platform.artifact }}.tar.gz -C ${{ matrix.platform.artifact }} .
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform.artifact }}
-          path: |
-            target/release/csvs
-            *.md
-            LICENSE
+          path: ${{ matrix.platform.artifact }}.tar.gz
   build-macos:
     name: Release - universal-apple-darwin
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@master
       - uses: dtolnay/rust-toolchain@stable
-      - run: rustup target add aarch64-apple-darwin
-      - run: rustup target add x86_64-apple-darwin
-      - run: cargo build --release --target aarch64-apple-darwin
-      - run: cargo build --release --target x86_64-apple-darwin
-      - run: lipo -create -output target/release/csvs target/aarch64-apple-darwin/release/csvs target/x86_64-apple-darwin/release/csvs
+      - run: |
+          rustup target add aarch64-apple-darwin
+          cargo build --release --target aarch64-apple-darwin
+      - run: |
+          rustup target add x86_64-apple-darwin
+          cargo build --release --target x86_64-apple-darwin
+      - run: |
+          mkdir csvs_macos_universal
+          lipo -create -output csvs_macos_universal/csvs target/aarch64-apple-darwin/release/csvs target/x86_64-apple-darwin/release/csvs
+          cp *.md csvs_macos_universal
+          zip csvs_macos_universal.zip -r csvs_macos_universal
       - uses: actions/upload-artifact@v4
         with:
           name: csvs_macos_universal
-          path: |
-            target/release/csvs
-            *.md
-            LICENSE
+          path: csvs_macos_universal.zip
   build-windows:
     name: Release - ${{ matrix.platform.target }}
     runs-on: windows-latest
@@ -65,12 +72,16 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - uses: dtolnay/rust-toolchain@stable
-      - run: rustup target add ${{ matrix.platform.target }}
-      - run: cargo build --release --target ${{ matrix.platform.target }}
+      - run: |
+          rustup target add ${{ matrix.platform.target }}
+          cargo build --release --target ${{ matrix.platform.target }}
+      - run: |
+          New-Item ${{ matrix.platform.artifact }} -ItemType Directory
+          Copy-Item *.md -Destination ${{ matrix.platform.artifact }}
+          Copy-Item target/${{ matrix.platform.target }}/release/csvs.exe -Destination ${{ matrix.platform.artifact }}
+          Compress-Archive -Path ${{ matrix.platform.artifact }} -DestinationPath ${{ matrix.platform.artifact }}.zip
+        shell: pwsh
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform.artifact }}
-          path: |
-            target/${{ matrix.platform.target }}/release/csvs.exe
-            *.md
-            LICENSE
+          path: ${{ matrix.platform.artifact }}.zip
