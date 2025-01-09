@@ -62,7 +62,7 @@ jobs:
           options: --timestamp --options runtime 
       - run: |
           cp *.md csvs_macos_universal
-          ditto -c -k --keepParent csvs_macos_universal .
+          ditto -c -k --keepParent csvs_macos_universal csvs_macos_universal.zip
       - uses: actions/upload-artifact@v4
         with:
           name: csvs_macos_universal
