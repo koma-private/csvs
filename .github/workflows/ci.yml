@@ -58,10 +58,11 @@ jobs:
           file: csvs_macos_universal/csvs
           certificate-data: ${{ secrets.APPLE_CERT_DATA }}
           certificate-id: 22L7S8RX9L
-          certificate-password: ${{ secrets.APPLE_CERT_PASSWORD }}    
+          certificate-password: ${{ secrets.APPLE_CERT_PASSWORD }}
+          options: --timestamp --options runtime 
       - run: |
           cp *.md csvs_macos_universal
-          zip csvs_macos_universal.zip -r csvs_macos_universal
+          ditto -c -k --keepParent csvs_macos_universal .
       - uses: actions/upload-artifact@v4
         with:
           name: csvs_macos_universal
