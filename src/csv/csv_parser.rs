@@ -152,7 +152,8 @@ impl<'a> CsvParser<'a> {
                 let data = record.get(header_index);
                 if data.is_some_and(|v| !v.is_empty()) {
                     let data = data.context(format!("Cannot get a value at {}", header_index))?;
-                    let detected = SqliteDataType::detect_type(data);
+                    let detected =
+                        SqliteDataType::detect_type(data, self.args.in_allow_leading_zeros);
 
                     if temp_types
                         .get(&header_index)

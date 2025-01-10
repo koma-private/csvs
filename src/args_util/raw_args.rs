@@ -17,6 +17,10 @@ pub struct RawArgs {
     #[clap(short, long, action = clap::ArgAction::Count)]
     pub help: u8,
 
+    /// Treat input values with leading zeros as numbers rather than text during CSV parsing.
+    #[clap(long, action = clap::ArgAction::Count)]
+    pub in_allow_leading_zeros: u8,
+
     /// Comment character for parsing CSV (single byte).
     #[clap(long)]
     pub in_comment: Option<String>,

@@ -9,6 +9,7 @@ pub struct Args {
     pub in_file: Vec<String>,                       // Input file paths
     pub statements: Vec<sqlparser::ast::Statement>, // SQL queries
     pub help: bool,                                 // Display help flag
+    pub in_allow_leading_zeros: bool,
     pub in_comment: Option<u8>,
     pub in_delimiter: u8, // CSV delimiter
     pub in_escape: Option<u8>,
@@ -71,6 +72,7 @@ impl From<RawArgs> for Args {
             in_file: value.in_file,
             statements,
             help: value.help > 0,
+            in_allow_leading_zeros: value.in_allow_leading_zeros > 0,
             in_comment,
             in_delimiter,
             in_escape,
