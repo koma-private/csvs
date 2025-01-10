@@ -53,6 +53,13 @@ jobs:
       - run: |
           mkdir csvs_macos_universal
           lipo -create -output csvs_macos_universal/csvs target/aarch64-apple-darwin/release/csvs target/x86_64-apple-darwin/release/csvs
+      - uses: lando/code-sign-action@v3
+        with:
+          file: csvs_macos_universal/csvs
+          apple-team-id: 22L7S8RX9L
+          certificate-data: ${{ secrets.APPLE_CERT_DATA }}
+          certificate-password: ${{ secrets.APPLE_CERT_PASSWORD }}
+          options: --timestamp --options runtime
       - run: |
           cp *.md csvs_macos_universal
           hdiutil create -srcfolder csvs_macos_universal -format UDZO csvs_macos_universal.dmg
