@@ -4,6 +4,9 @@
 embedded [SQLite](https://www.sqlite.org/) engine. Whether you're a data analyst managing datasets or a developer
 processing text-based data, **csvs** enhances your workflow with SQL's full capabilities.
 
+[![GitHub Tag](https://img.shields.io/github/v/tag/koma-private/csvs)](https://github.com/koma-private/csvs)
+[![Crates.io Version](https://img.shields.io/crates/v/csvs)](https://crates.io/crates/csvs)
+
 ![Banner of executing csvs](assets/usage.banner.png)
 ![Banner of interactive mode](assets/interactive.banner.png)
 
@@ -196,6 +199,7 @@ See [Build Guide](build.md)
 
 - *Interactive mode* cannot be used if CSV data is provided via `STDIN`. Use `--in-file` to specify CSV files instead.
 - Since **csvs** loads entire CSV files into memory, large files may require significant RAM.
+- CSV files with filenames starting with `sqlite_` cannot be specified using the `--in-file` option, as names beginning with `sqlite_` are reserved by the SQLite database.
 
 ## Acknowledgments
 
@@ -223,5 +227,5 @@ See [Build Guide](build.md)
 
 ## License
 
-* **csvs** is licensed under the MIT license.
+* **csvs** is licensed under the [MIT license](LICENSE).
 
