@@ -6,7 +6,6 @@ use crate::db::execute_statements::execute_statements;
 use crate::db::list_available_table::list_available_tables;
 use crate::format::STYLE_BAR;
 use crate::tui::tui_main::tui_main;
-use crate::util::is_tsv_filename::is_tsv_filename;
 
 use tracing::{debug, error};
 
