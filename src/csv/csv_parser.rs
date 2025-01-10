@@ -28,7 +28,7 @@ impl<'a> CsvParser<'a> {
         &self,
         encoding: Option<String>,
         delimiter: u8,
-    ) -> anyhow::Result<(String, Vec<sqlparser::ast::Statement>)> {
+    ) -> anyhow::Result<(String, Vec<String>)> {
         debug!(
             "Parsing stdin with encoding: {:?}, delimiter: {}",
             encoding, delimiter
@@ -64,7 +64,7 @@ impl<'a> CsvParser<'a> {
         file_path: &str,
         encoding: Option<String>,
         delimiter: u8,
-    ) -> anyhow::Result<(String, Vec<sqlparser::ast::Statement>)> {
+    ) -> anyhow::Result<(String, Vec<String>)> {
         debug!(
             "Parsing file: {} with encoding: {:?}, delimiter: {}",
             file_path, encoding, delimiter
@@ -114,7 +114,7 @@ impl<'a> CsvParser<'a> {
         mut csv_reader: CsvReaderType<T>,
         buf_name: &str,
         buf_size: Option<u64>,
-    ) -> anyhow::Result<(String, Vec<sqlparser::ast::Statement>)> {
+    ) -> anyhow::Result<(String, Vec<String>)> {
         debug!("Parsing table: {}, size: {:?}", buf_name, buf_size);
 
         let pb = if let Some(buf_size) = buf_size {
@@ -123,6 +123,7 @@ impl<'a> CsvParser<'a> {
             indicatif::ProgressBar::no_length()
         };
         pb.set_style(STYLE_BAR.clone());
+        pb.set_message("Parsing CSV");
 
         let mut headers = if self.args.in_no_header {
             vec![]
@@ -157,7 +158,7 @@ impl<'a> CsvParser<'a> {
 
                     if temp_types
                         .get(&header_index)
-                        .is_none_or(|v| v.can_convert(detected))
+                        .is_none_or(|v| v.can_convert_into(detected))
                     {
                         temp_types.insert(header_index, detected);
                     }
@@ -171,7 +172,10 @@ impl<'a> CsvParser<'a> {
 
             temp_records.push(temp_record);
             if let Some(position) = record.position() {
-                pb.set_position(position.byte());
+                let position_byte = position.byte();
+                if position_byte % 1024 == 0 {
+                    pb.set_position(position_byte);
+                }
             }
         }
 
@@ -180,20 +184,9 @@ impl<'a> CsvParser<'a> {
         pb.set_position(0);
 
         debug!("Finished parsing. Total rows: {}", temp_records.len());
-        let mut statements: Vec<sqlparser::ast::Statement> = Vec::new();
-        let dialect = sqlparser::dialect::SQLiteDialect {};
+        let mut statements: Vec<String> = Vec::new();
 
         let buf_name_quoted = SqliteQuoted::Field(buf_name.to_string()).get();
-        let sql_drop_table = format!("DROP TABLE IF EXISTS {};", buf_name_quoted);
-
-        match sqlparser::parser::Parser::parse_sql(&dialect, &sql_drop_table) {
-            Ok(mut parsed) => {
-                statements.append(&mut parsed);
-            }
-            Err(err) => {
-                return Err(anyhow::anyhow!("{} {}", err, sql_drop_table));
-            }
-        }
 
         let mut sql_create: Vec<String> = vec![];
         sql_create.push(format!("CREATE TABLE {} (", buf_name_quoted));
@@ -227,15 +220,7 @@ impl<'a> CsvParser<'a> {
 
         sql_create.push(format!("{});", sub_sql_create.join(",")));
         let sql_create_final = sql_create.join("");
-
-        match sqlparser::parser::Parser::parse_sql(&dialect, &sql_create_final) {
-            Ok(mut parsed) => {
-                statements.append(&mut parsed);
-            }
-            Err(err) => {
-                return Err(anyhow::anyhow!("{} {}", err, sql_create_final));
-            }
-        }
+        statements.push(sql_create_final);
 
         // Insert values into the database table
         let sql_insert = format!(
@@ -245,6 +230,7 @@ impl<'a> CsvParser<'a> {
         );
 
         let chunk_size = 50;
+        let mut pb_current_position = 0;
         let temp_records_iter = temp_records.chunks(chunk_size);
         for records in temp_records_iter {
             let mut sql_insert_values: Vec<String> = vec![];
@@ -280,17 +266,12 @@ impl<'a> CsvParser<'a> {
 
             let sql_final_insert =
                 format!("{} VALUES {};", sql_insert, sql_insert_values.join(", "));
+            statements.push(sql_final_insert);
 
-            match sqlparser::parser::Parser::parse_sql(&dialect, &sql_final_insert) {
-                Ok(mut parsed) => {
-                    statements.append(&mut parsed);
-                }
-                Err(err) => {
-                    return Err(anyhow::anyhow!("{} {}", err, sql_final_insert));
-                }
+            pb_current_position += chunk_size;
+            if pb_current_position % 10 == 0 {
+                pb.set_position(pb_current_position as u64);
             }
-
-            pb.inc(chunk_size as u64);
         }
 
         pb.finish_and_clear();
@@ -305,8 +286,9 @@ impl<'a> CsvParser<'a> {
         encoding: String,
         delimiter: u8,
     ) -> anyhow::Result<CsvReaderType<T>> {
-        let encoding_label = encoding_rs::Encoding::for_label(encoding.to_lowercase().as_bytes())
-            .context(anyhow::anyhow!("Invalid encoding: {}", encoding))?;
+        let encoding_label =
+            encoding_rs::Encoding::for_label_no_replacement(encoding.to_lowercase().as_bytes())
+                .context(anyhow::anyhow!("Invalid encoding: {}", encoding))?;
 
         let decode_reader =
             encoding_rs_rw::DecodingReader::new(buf_reader, encoding_label.new_decoder());
