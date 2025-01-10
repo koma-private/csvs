@@ -166,25 +166,21 @@ jobs:
 
       - name: Release note
         run: |
-          echo "SHA-256 Checksums" > Release.txt
-          echo "[Windows Intel/AMD 64bit]   csvs_windows_x86_64.zip   ${{ env.CHECKSUM_WINDOWS_X86_64 }}" >> Release.txt
-          echo "[Windows ARM 64bit]         csvs_windows_aarch64.zip  ${{ env.CHECKSUM_WINDOWS_AARCH64 }}" >> Release.txt
-          echo "[macOS Intel/Apple silicon] csvs_macos_universal.dmg  ${{ env.CHECKSUM_MACOS_UNIVERSAL }}" >> Release.txt
-          echo "[Linux Intel/AMD 64bit]     csvs_linux_x86_64.tar.gz  ${{ env.CHECKSUM_LINUX_X86_64 }}" >> Release.txt
-          echo "[Linux ARM 64bit]           csvs_linux_aarch64.tar.gz ${{ env.CHECKSUM_LINUX_AARCH64 }}" >> Release.txt
+          echo "## Distributions" > Distributions.md
+          echo "| OS      | Arch                | Filename                  | SHA-256 Checksum                                                 |" >> Distributions.md
+          echo "|---------|---------------------|---------------------------|------------------------------------------------------------------|" >> Distributions.md
+          echo "| Windows | Intel/AMD 64bit     | csvs_windows_x86_64.zip   | ${{ env.CHECKSUM_WINDOWS_X86_64 }} |" >> Distributions.md
+          echo "| Windows | ARM 64bit           | csvs_windows_aarch64.zip  | ${{ env.CHECKSUM_WINDOWS_AARCH64 }} |" >> Distributions.md
+          echo "| macOS   | Intel/Apple silicon | csvs_macos_universal.dmg  | ${{ env.CHECKSUM_MACOS_UNIVERSAL }} |" >> Distributions.md
+          echo "| Linux   | Intel/AMD 64bit     | csvs_linux_x86_64.tar.gz  | ${{ env.CHECKSUM_LINUX_X86_64 }} |" >> Distributions.md
+          echo "| Linux   | ARM 64bit           | csvs_linux_aarch64.tar.gz | ${{ env.CHECKSUM_LINUX_AARCH64 }} |" >> Distributions.md
           cat Release.txt
 
-      - name: 'Get Previous tag'
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
-        with:
-          fallback: 1.0.0
-          
       - name: Release
         uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: ${{ steps.previoustag.outputs.tag }}
-          body_path: Release.txt
+          body_path: Distributions.md
           generate_release_notes: true
           files: |
             artifact/csvs_linux_aarch64.tar.gz
