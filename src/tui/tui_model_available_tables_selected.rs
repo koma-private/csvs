@@ -1,6 +1,6 @@
 use crate::tui::tui_model::TuiModel;
 use crate::tui::tui_msg::TuiMsg;
-use crate::util::sqlite_quoted::SqliteQuoted;
+use crate::db::sqlite_quoted::SqliteQuoted;
 use tuirealm::terminal::TerminalAdapter;
 
 impl<T> TuiModel<T>

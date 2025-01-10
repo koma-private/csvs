@@ -1,4 +1,4 @@
-use crate::args::Args;
+use crate::args_util::args::Args;
 use crate::db::statement_result::StatementPagedResult;
 use crate::tui::component_available_tables::ComponentAvailableTables;
 use crate::tui::component_message_dialog::ComponentMessageDialogType;
