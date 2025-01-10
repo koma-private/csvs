@@ -4,13 +4,13 @@ categories = ["command-line-utilities"]
 description = "csvs (CSV Sql) is a command-line tool designed to streamline SQL queries on CSV or TSV files using an embedded SQLite engine."
 edition = "2021"
 homepage = "https://github.com/koma-private/csvs"
-include = ["assets/**/*", "src/**/*", "LICENSE", "*.md", "*.sh", "*.cmd", "*.Dockerfile"]
+include = ["assets/**/*", "src/**/*", "LICENSE", "*.md"]
 keywords = ["csv", "tsv", "sql", "cli", "parser"]
 license = "MIT"
 name = "csvs"
 readme = "README.md"
 repository = "https://github.com/koma-private/csvs"
-version = "1.0.0"
+version = "1.0.1"
 
 [features]
 default = []
@@ -18,10 +18,10 @@ default = []
 [dependencies]
 anyhow = { version = "1.0.95" }
 chardetng = { version = "0.1.17" }
-clap = { version = "4.5.23", features = ["derive"] }
+clap = { version = "4.5.26", features = ["derive"] }
 clap-help = { version = "1.3.1" }
 csv = { version = "1.3.1" }
-encoding_rs = { version = "0.8.35" }
+encoding_rs = { version = "0.8.35", features = ["fast-legacy-encode"] }
 encoding_rs_rw = { version = "0.4.2" }
 indicatif = { version = "0.17.9" }
 lazy-regex = { version = "3.4.1" }
