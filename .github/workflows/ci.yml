@@ -62,11 +62,22 @@ jobs:
           options: --timestamp --options runtime 
       - run: |
           cp *.md csvs_macos_universal
-          ditto -c -k --keepParent csvs_macos_universal csvs_macos_universal.zip
+          hdiutil create -srcfolder csvs_macos_universal -format UDZO csvs_macos_universal.dmg
+      - uses: lando/code-sign-action@v3
+        with:
+          file: csvs_macos_universal.dmg
+          apple-notary-user: ${{ secrets.APPLE_NOTARY_USER }}
+          apple-notary-password: ${{ secrets.APPLE_NOTARY_PASSWORD }}
+          apple-product-id: jp.koma-private.csvs
+          apple-team-id: 22L7S8RX9L
+          certificate-data: ${{ secrets.APPLE_CERT_DATA }}
+          certificate-password: ${{ secrets.APPLE_CERT_PASSWORD }}
+          options: --timestamp
+      - run: xcrun stapler staple csvs_macos_universal.dmg    
       - uses: actions/upload-artifact@v4
         with:
           name: csvs_macos_universal
-          path: csvs_macos_universal.zip
+          path: csvs_macos_universal.dmg
   build-windows:
     name: Release - ${{ matrix.platform.target }}
     runs-on: windows-latest
