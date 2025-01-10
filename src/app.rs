@@ -80,8 +80,10 @@ fn process_stdin(
     pb.set_style(STYLE_BAR.clone());
     pb.set_message(format!("Importing data from {}", buf_name));
     for (index, statement) in statements.iter().enumerate().take(statements_len) {
-        pb.set_position(index as u64);
-        conn.execute(statement.to_string().as_str(), ())?;
+        if index % 10 == 0 {
+            pb.set_position(index as u64);
+        }
+        conn.execute(statement, ())?;
     }
     Ok(())
 }
@@ -102,7 +104,10 @@ fn process_input_files(
             default_delimiter
         };
 
-        debug!("Processing file: {} with delimiter: {}", input_file, delimiter);
+        debug!(
+            "Processing file: {} with delimiter: {}",
+            input_file, delimiter
+        );
         match parser.parse_file(input_file, None, delimiter) {
             Ok((buf_name, statements)) => {
                 let statements_len = statements.len();
@@ -110,8 +115,10 @@ fn process_input_files(
                 pb.set_style(STYLE_BAR.clone());
                 pb.set_message(format!("Importing data from file: {}", buf_name));
                 for (index, statement) in statements.iter().enumerate().take(statements_len) {
-                    pb.set_position(index as u64);
-                    conn.execute(statement.to_string().as_str(), ())?;
+                    if index % 10 == 0 {
+                        pb.set_position(index as u64);
+                    }
+                    conn.execute(statement, ())?;
                 }
             }
             Err(err) => {
