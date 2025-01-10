@@ -1,4 +1,4 @@
-use crate::raw_args::RawArgs;
+use crate::args_util::raw_args::RawArgs;
 use clap::{crate_name, crate_version, CommandFactory};
 
 /// Displays the help message.

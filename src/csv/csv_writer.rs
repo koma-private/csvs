@@ -1,5 +1,5 @@
-use crate::args::Args;
-use crate::util::is_tsv_filename::is_tsv_filename;
+use crate::args_util::args::Args;
+use crate::args_util::is_tsv_filename::is_tsv_filename;
 use anyhow::Context;
 use tracing::debug;
 

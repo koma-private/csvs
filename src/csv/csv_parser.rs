@@ -1,7 +1,7 @@
-use crate::args::Args;
+use crate::args_util::args::Args;
+use crate::db::sqlite_data_type::SqliteDataType;
+use crate::db::sqlite_quoted::SqliteQuoted;
 use crate::format::STYLE_BAR;
-use crate::sqlite_data_type::SqliteDataType;
-use crate::util::sqlite_quoted::SqliteQuoted;
 use anyhow::Context;
 use std::collections::HashMap;
 use std::io::{IsTerminal, Read};

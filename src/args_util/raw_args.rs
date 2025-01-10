@@ -1,5 +1,5 @@
-use crate::quote_style::MyQuoteStyle;
-use crate::trim::MyTrim;
+use crate::args_util::quote_style::MyQuoteStyle;
+use crate::args_util::trim::MyTrim;
 
 /// Represents raw command-line arguments parsed by `clap`.
 #[derive(clap::Parser, Debug)]

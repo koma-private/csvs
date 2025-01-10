@@ -1,23 +1,18 @@
 use crate::app::app;
-use crate::args::Args;
+use args_util::args::Args;
 use crate::help::{safe_show_help, safe_show_version};
-use crate::raw_args::RawArgs;
+use args_util::raw_args::RawArgs;
 use clap::Parser;
 use tracing::debug;
 
 mod app;
-mod args;
 mod csv;
 mod db;
 mod format;
 mod help;
 mod logger;
-mod quote_style;
-mod raw_args;
-mod sqlite_data_type;
-mod trim;
 mod tui;
-mod util;
+mod args_util;
 
 /// Application entry point
 fn main() -> anyhow::Result<()> {
