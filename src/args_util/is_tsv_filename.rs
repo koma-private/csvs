@@ -14,8 +14,7 @@ pub fn is_tsv_filename(filename: &str) -> bool {
         // Validate extension as str
         if let Some(extension) = extension.to_str() {
             // Compare case-insensitively.
-            let is_tsv = extension.to_lowercase().eq("tsv");
-            return is_tsv;
+            return extension.eq_ignore_ascii_case("tsv");
         }
     }
     // No `.tsv` extension found
