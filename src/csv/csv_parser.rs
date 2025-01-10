@@ -6,6 +6,7 @@ use anyhow::Context;
 use std::collections::HashMap;
 use std::io::{IsTerminal, Read};
 
+use crate::db::is_reserved_table_name::is_reserved_table_name;
 use tracing::debug;
 
 /// Parses CSV data and generates SQL statements
@@ -68,6 +69,15 @@ impl<'a> CsvParser<'a> {
             "Parsing file: {} with encoding: {:?}, delimiter: {}",
             file_path, encoding, delimiter
         );
+
+        let check_path = std::path::Path::new(file_path);
+        let check_file_name = check_path.file_name().unwrap().to_str().unwrap();
+        if is_reserved_table_name(check_file_name) {
+            return Err(anyhow::anyhow!(
+                "You cannot use the SQLite's reserved word 'sqlite_' as the name of the input file: {}",
+                check_file_name
+            ));
+        };
 
         let encoding_detected = encoding.unwrap_or_else(|| {
             self.detect_encoding(&mut std::io::BufReader::new(

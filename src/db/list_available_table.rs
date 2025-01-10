@@ -1,3 +1,5 @@
+use crate::db::is_reserved_table_name::is_reserved_table_name;
+
 /// Retrieves user-defined table names from the SQLite database.
 /// Filters out internal SQLite tables like `sqlite_sequence` or index tables.
 ///
@@ -24,10 +26,7 @@ pub fn list_available_tables(
 
             if let Ok(value) = value {
                 // Exclude internal SQLite tables.
-                if !(value.contains("sqlite_sequence")
-                    || value.starts_with("sqlite_autoindex_")
-                    || value.starts_with("sqlite_stat"))
-                {
+                if !is_reserved_table_name(&value) {
                     values.push(value);
                 }
             }
