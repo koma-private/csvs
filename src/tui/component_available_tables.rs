@@ -3,7 +3,7 @@ use crate::tui::tui_user_event::TuiUserEvent;
 
 use tui_realm_stdlib::Table;
 use tuirealm::command::{Cmd, CmdResult, Direction, Position};
-use tuirealm::event::{Key, KeyEvent};
+use tuirealm::event::{Key, KeyEvent, KeyModifiers};
 use tuirealm::props::{Alignment, BorderType, Borders, Color, Style, TableBuilder, TextSpan};
 use tuirealm::{AttrValue, Attribute, Component, Event, MockComponent};
 
@@ -60,6 +60,19 @@ impl Component<TuiMsg, TuiUserEvent> for ComponentAvailableTables {
                     if let Some(row) = table.get(self.component.states.list_index) {
                         if let Some(selected) = row.first() {
                             return Some(TuiMsg::AvailableTablesSelected(selected.content.clone()));
+                        }
+                    }
+                }
+                CmdResult::None
+            }
+            Event::Keyboard(KeyEvent {
+                code: Key::Char('i'),
+                modifiers: KeyModifiers::CONTROL,
+            }) => {
+                if let Some(AttrValue::Table(table)) = self.query(Attribute::Content) {
+                    if let Some(row) = table.get(self.component.states.list_index) {
+                        if let Some(selected) = row.first() {
+                            return Some(TuiMsg::DatabaseRequestTableInfo(selected.content.clone()));
                         }
                     }
                 }
