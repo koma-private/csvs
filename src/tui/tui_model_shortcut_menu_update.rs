@@ -56,6 +56,7 @@ where
             TuiId::AvailableTables => {
                 let mut temp = Vec::from([
                     ShortCut::new("Enter", "Select Table"),
+                    ShortCut::new("CTRL+I", "Table Info"),
                     ShortCut::new("↑↓", "Move Cursor"),
                     ShortCut::new("Home", "To Top"),
                     ShortCut::new("End", "To Bottom"),
@@ -93,6 +94,18 @@ where
                     ShortCut::new("←→", "Move Cursor"),
                     ShortCut::new("Home", "To Begin"),
                     ShortCut::new("End", "To End"),
+                ]))
+                .render_to_spans(),
+            ),
+            TuiId::TableInfoDialog => Some(
+                ShortCutMenu::new(Vec::from([
+                    ShortCut::new("Esc", "Cancel"),
+                    ShortCut::new("Enter", "Input Column Name"),
+                    ShortCut::new("↑↓", "Move Cursor"),
+                    ShortCut::new("Home", "To Begin"),
+                    ShortCut::new("End", "To End"),
+                    ShortCut::new("PageUp", "Scroll↑"),
+                    ShortCut::new("PageDown", "Scroll↓"),
                 ]))
                 .render_to_spans(),
             ),
