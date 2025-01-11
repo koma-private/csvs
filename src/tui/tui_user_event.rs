@@ -26,6 +26,7 @@ pub enum TuiUserEvent {
     MessageDialogShow(TuiId, ComponentMessageDialogType, String),
     /// Closes the progress dialog.
     ProgressDialogClose,
+    RequestDatabaseTableInfo(String),
 }
 
 impl PartialEq<Self> for TuiUserEvent {
@@ -55,6 +56,9 @@ impl PartialEq<Self> for TuiUserEvent {
             }
             TuiUserEvent::ProgressDialogClose => {
                 matches!(other, TuiUserEvent::ProgressDialogClose)
+            }
+            TuiUserEvent::RequestDatabaseTableInfo(_) => {
+                matches!(other, TuiUserEvent::RequestDatabaseTableInfo(_))
             }
         }
     }
