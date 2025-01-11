@@ -30,7 +30,7 @@ pub fn execute_statements(
 
         match statement {
             sqlparser::ast::Statement::Query(_)
-            | sqlparser::ast::Statement::Pragma { value: None, .. } => {
+            | sqlparser::ast::Statement::Pragma { is_eq: false, .. } => {
                 debug!("Running query/pragma: {}", statement);
 
                 let start = std::time::Instant::now();
