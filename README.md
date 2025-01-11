@@ -1,8 +1,8 @@
 # csvs
 
-**csvs** (**CSV** **S**ql) is a command-line tool designed to streamline SQL queries on CSV or TSV files using an
-embedded [SQLite](https://www.sqlite.org/) engine. Whether you're a data analyst managing datasets or a developer
-processing text-based data, **csvs** enhances your workflow with SQL's full capabilities.
+**csvs** (**CSV** **S**ql) is a command-line tool that simplifies working with CSV or TSV files by enabling SQL queries
+through an embedded [SQLite](https://www.sqlite.org/) engine. It is ideal for data analysts and developers who need
+SQL's flexibility to manage text-based data efficiently.
 
 [![GitHub Tag](https://img.shields.io/github/v/tag/koma-private/csvs)](https://github.com/koma-private/csvs)
 [![Crates.io Version](https://img.shields.io/crates/v/csvs)](https://crates.io/crates/csvs)
@@ -13,6 +13,7 @@ processing text-based data, **csvs** enhances your workflow with SQL's full capa
 - [Features](#features)
     - [SQL Power for CSV Files](#sql-power-for-csv-files)
     - [Automatic Encoding Detection](#automatic-encoding-detection)
+    - [Decide Data Type for Each Column](#decide-data-type-for-each-column)
     - [Multi-File Handling](#multi-file-handling)
     - [Customizable Output](#customizable-output)
     - [Interactive Mode](#interactive-mode)
@@ -38,36 +39,53 @@ processing text-based data, **csvs** enhances your workflow with SQL's full capa
 
 ### SQL Power for CSV Files
 
-Run powerful SQL queries like `JOIN`, `GROUP BY`, `SUM()`, or `COUNT()` on CSV data.
-Query, filter, sort, group, and combine data more flexibly than traditional spreadsheet tools.
+Run advanced SQL queries, including `JOIN`, `GROUP BY`, `SUM()`, or `COUNT()` on CSV data.
+Gain unparalleled flexibility to query, filter, sort, group, and combine data compared to traditional spreadsheet tools.
 
 ### Automatic Encoding Detection
 
-No more guessing file encodings! **csvs** auto-detects character encodings, ensuring smooth processing without garbled
-text or broken queries.
+Eliminate encoding issues with automatic detection of character encodings. Avoid garbled text and broken queries
+effortlessly.
+
+### Decide Data Type for Each Column
+
+**csvs** scans CSV rows to determine the most appropriate data types for SQLite tables. This dynamic analysis ensures
+compatibility and precision, even when handling nullable fields.
+
+See [Decide Data Type for Each Column](decide_data_type.md) and [Validating Number Document](validating_number.md) for
+details.
 
 ### Multi-File Handling
 
-Easily join multiple files with `--in-file` to create a temporary SQLite database. Perform SQL joins across files in
-seconds.
+Combine data from multiple CSV or TSV files by creating a temporary SQLite database using `--in-file`. Easily perform
+SQL joins across files in seconds.
+
+Common use cases:
+
+- Merging datasets from separate files.
+- Cross-referencing data using SQL joins.
 
 ### Customizable Output
 
 Export query results as:
 
-- **CSV or TSV**: For sharing or downstream processing.
-- **SQLite Database**: Keep results as `.db` files for later queries.
+- **CSV or TSV**: Ideal for data sharing or further processing.
+- **SQLite Database**: Retain results as `.db` files for future queries.
 
-Customize delimiters, headers, and quoting styles for total control.
+Control delimiters, headers, and quoting styles to suit your needs.
 
 ### Interactive Mode
 
-Run **csvs** interactively when no query is provided. Explore data as SQLite tables, run ad-hoc queries, and preview
-results.
+Explore datasets interactively without specifying queries upfront. Features include:
+
+- Browsing imported tables.
+- Ad-hoc query execution.
+- Previewing and saving query results.
 
 ### Multi-Statement Query Support
 
-Execute multiple SQL statements in one command. Transform data across steps, with only the final result displayed.
+Execute multiple SQL statements in a single command. Transform and query data across multiple steps, with only the final
+result displayed.
 
 ---
 
@@ -81,10 +99,11 @@ csvs --help
 
 ### Interactive Mode
 
-- If neither `--query` nor` --source` is specified, **csvs** starts in *interactive mode*, allowing you to:
-    - View and explore tables.
-    - Preview table data.
-    - Save query results to files.
+Start **csvs** in *interactive mode* when neither `--query` nor `--source` is specified. This mode allows you to:
+
+- View imported tables.
+- Preview table content.
+- Save query results to files interactively.
 
 See [Interactive Mode Guide](interactive_mode.md)
 
@@ -106,13 +125,13 @@ See [Command Options Guide](command_options.md)
 csvs --version
 ```
 
-- Select "city","town","phone" from `./data/address.csv` and save to `picked.csv`:
+- Select specific fields from `./data/address.csv` and save the results to `picked.csv`:
 
 ```shell
 csvs -i ./data/address.csv -q 'SELECT "city","town","phone" FROM "address.csv"' -o picked.csv
 ```
 
-- Read CSV data from `STDIN`:
+- Process CSV data from `STDIN`:
 
 ```shell
 csvs -q 'SELECT "city","town","phone" FROM "stdin"' < ./data/address.csv > picked.csv
@@ -124,21 +143,19 @@ or
 cat ./data/address.csv | csvs -q 'SELECT "city","town","phone" FROM "stdin"' > picked.csv
 ```
 
-- Select all fields from `./left.csv` joined with `./right.tsv` on a common field `name`. Multiple `--in-file` flags can
-  be used to handle multiple input files in one command:
+- Perform SQL joins across multiple files:
 
 ```shell
 csvs -i ./left.csv -i ./right.tsv -q 'SELECT * FROM "left.csv" AS l JOIN "right.tsv" AS r ON l."name"=r."name"'
 ```
 
-- Use standard SQLite functions (e.g., `UPPER()`, `LOWER()`, `LENGTH()`, `COUNT()`, `SUM()`).<br>Example: Export
-  the generated tables to a SQLite database file with `--out-database`:
+- Leverage SQLite functions like `UPPER()`, `COUNT()`, etc., and export results to a SQLite database:
 
 ```shell
 csvs -i people.csv -q 'SELECT "city",COUNT(*) FROM "people.csv" GROUP BY "city" ORDER BY COUNT(*) DESC' --out-database out.db
 ```
 
-- Start in *interactive mode* (triggered when neither `--query` nor `--source` is specified):
+- Start in *interactive mode*:
 
 ```shell
 csvs -i MOCK_DATA.csv
@@ -150,36 +167,35 @@ csvs -i MOCK_DATA.csv
 
 ### Mapping CSVs to Table Names
 
-`--in-file` names map directly to SQLite tables (e.g. `./sample/address.csv` becomes `"address.csv"`,
+File names provided with `--in-file` map directly to SQLite tables (e.g. `./sample/address.csv` becomes `"address.csv"`,
 and `data.2024.csv` becomes `"data.2024.csv"`).
 
 ### Quoting Columns with Special Characters
 
-If a CSV file name or header contains spaces, punctuation, or reserved words, the column or table name must be quoted (
-e.g., `"first name"`).<br>
-Example:
+Columns or table names with spaces, punctuation, or reserved words must be quoted. Example:
 
 ```sql
-SELECT "first name", "last name" FROM "contacts.csv"
+SELECT "first name", "last name"
+FROM "contacts.csv"
 ```
 
 ### `--in-no-header` Option
 
-If `--in-no-header` is specified, columns are named "c1", "c2", "c3", and so on automatically.
+If specified, column names default to "c1", "c2", "c3", etc., for header-less CSV files.
 
 ### Execute Multiple Statements in a Single Query
 
-**csvs** can process multiple SQL statements if each statement is separated by a semicolon. Only the final statement's
-result is displayed.<br>
+Separate SQL statements with semicolons to execute multiple queries in sequence. Only the result of the final query is
+displayed.
+
 Example:
 
 ```sql
-SELECT "first name" FROM "contacts.csv";
-SELECT "age" FROM "contacts.csv"; 
+SELECT "first name"
+FROM "contacts.csv";
+SELECT "age"
+FROM "contacts.csv"; 
 ```
-
-In this example, **csvs** executes both queries but only shows the output of the
-second `SELECT "age" FROM "contacts.csv"`.
 
 ---
 
@@ -197,13 +213,16 @@ See [Build Guide](build.md)
 
 ## Limitations
 
-- *Interactive mode* cannot be used if CSV data is provided via `STDIN`. Use `--in-file` to specify CSV files instead.
-- Since **csvs** loads entire CSV files into memory, large files may require significant RAM.
-- CSV files with filenames starting with `sqlite_` cannot be specified using the `--in-file` option, as names beginning with `sqlite_` are reserved by the SQLite database.
+- *Interactive mode* cannot be invoked when CSV data is provided via `STDIN`. Use `--in-file` to specify CSV files
+  instead.
+- Large files may require significant RAM since **csvs** loads entire files into memory when `--out-database` is not
+  specified.
+- CSV files with names starting with `sqlite_` cannot be used with `--in-file` due to SQLite's reserved naming
+  convention.
 
 ## Acknowledgments
 
-**csvs** is powered by these awesome projects:
+**csvs** relies on the following open-source projects:
 
 - [SQLite](https://www.sqlite.org/)
 - [anyhow](https://github.com/dtolnay/anyhow)
@@ -224,8 +243,8 @@ See [Build Guide](build.md)
 - [tracing](https://github.com/tokio-rs/tracing)
 - [tracing-logfmt](https://github.com/EmbarkStudios/tracing-logfmt)
 - [tuirealm](https://github.com/veeso/tui-realm)
+- And many more! See the full list in the source repository.
 
 ## License
 
-* **csvs** is licensed under the [MIT license](LICENSE).
-
+**csvs** is licensed under the [MIT license](LICENSE).
