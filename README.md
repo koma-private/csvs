@@ -4,6 +4,7 @@
 through an embedded [SQLite](https://www.sqlite.org/) engine. It is ideal for data analysts and developers who need
 SQL's flexibility to manage text-based data efficiently.
 
+[![GitHub Release](https://img.shields.io/github/actions/workflow/status/koma-private/csvs/release.yml)](https://github.com/koma-private/csvs)
 [![GitHub Tag](https://img.shields.io/github/v/tag/koma-private/csvs)](https://github.com/koma-private/csvs)
 [![Crates.io Version](https://img.shields.io/crates/v/csvs)](https://crates.io/crates/csvs)
 
