@@ -32,6 +32,7 @@ jobs:
       - run: |
           mkdir ${{ matrix.platform.artifact }}
           cp *.md ${{ matrix.platform.artifact }}
+          cp LICENSE ${{ matrix.platform.artifact }}
           cp target/${{ matrix.platform.target }}/release/csvs ${{ matrix.platform.artifact }}
           tar czf ${{ matrix.platform.artifact }}.tar.gz -C ${{ matrix.platform.artifact }} .
       - uses: actions/upload-artifact@v4
@@ -59,6 +60,7 @@ jobs:
         run: |
           mkdir csvs_macos_universal
           cp *.md csvs_macos_universal
+          cp LICENSE csvs_macos_universal
           lipo -create -output csvs_macos_universal/csvs target/aarch64-apple-darwin/release/csvs target/x86_64-apple-darwin/release/csvs
 
       - name: Import certification
@@ -138,6 +140,7 @@ jobs:
       - run: |
           New-Item ${{ matrix.platform.artifact }} -ItemType Directory
           Copy-Item *.md -Destination ${{ matrix.platform.artifact }}
+          Copy-Item LICENSE -Destination ${{ matrix.platform.artifact }}
           Copy-Item target/${{ matrix.platform.target }}/release/csvs.exe -Destination ${{ matrix.platform.artifact }}
           Compress-Archive -Path ${{ matrix.platform.artifact }} -DestinationPath ${{ matrix.platform.artifact }}.zip
         shell: pwsh
