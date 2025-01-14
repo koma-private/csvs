@@ -7,6 +7,7 @@ use crate::db::list_available_table::list_available_tables;
 use crate::format::STYLE_BAR;
 use crate::tui::tui_main::tui_main;
 
+use crate::db::initialize_database::initialize_database;
 use tracing::{debug, error};
 
 /// Main application logic
@@ -43,25 +44,6 @@ pub fn app(args: Args) -> anyhow::Result<()> {
         tui_main(pool, args)?;
     }
     Ok(())
-}
-
-/// Initialize SQLite database connection
-fn initialize_database(
-    out_database: &Option<String>,
-) -> anyhow::Result<r2d2::Pool<r2d2_sqlite::SqliteConnectionManager>> {
-    let manager = match out_database {
-        None => {
-            debug!("Using in-memory SQLite database.");
-            r2d2_sqlite::SqliteConnectionManager::memory()
-        }
-        Some(path) => {
-            debug!("Using SQLite database at path: {}", path);
-            r2d2_sqlite::SqliteConnectionManager::file(path)
-        }
-    };
-
-    let pool = r2d2::Pool::new(manager)?;
-    Ok(pool)
 }
 
 /// Process CSV data from standard input

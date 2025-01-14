@@ -41,6 +41,7 @@ SQL's flexibility to manage text-based data efficiently.
 
 Run advanced SQL queries, including `JOIN`, `GROUP BY`, `SUM()`, or `COUNT()` on CSV data.
 Gain unparalleled flexibility to query, filter, sort, group, and combine data compared to traditional spreadsheet tools.
+**csvs** also supports regular expressions in SQL queries. Refer to [Regular Expressions Document](regexp.md).
 
 ### Automatic Encoding Detection
 

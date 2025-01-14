@@ -27,7 +27,7 @@ indicatif = { version = "0.17.9" }
 lazy-regex = { version = "3.4.1" }
 r2d2 = { version = "0.8.10" }
 r2d2_sqlite = { version = "0.25.0" }
-rusqlite = { version = "0.32.1", features = ["bundled"] }
+rusqlite = { version = "0.32.1", features = ["bundled", "functions"] }
 smashquote = { version = "0.1.2" }
 sqlparser = { version = "0.53.0" }
 tracing = { version = "0.1.41" }
