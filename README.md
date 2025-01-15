@@ -10,6 +10,7 @@ SQL's flexibility to manage text-based data efficiently.
 
 ![Banner of executing csvs](assets/usage.banner.png)
 ![Banner of interactive mode](assets/interactive.banner.png)
+![Banner of interactive mode](assets/interactive2.banner.png)
 
 - [Features](#features)
     - [SQL Power for CSV Files](#sql-power-for-csv-files)

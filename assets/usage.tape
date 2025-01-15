@@ -7,7 +7,7 @@ Set Margin 0
 Set PlaybackSpeed 1.0
 Set Shell zsh
 Set Theme "iTerm2 Default"
-Set TypingSpeed 80ms
+Set TypingSpeed 60ms
 Set Width 1200
 
 Type "csvs -i MOCK_DATA.csv -q '"
