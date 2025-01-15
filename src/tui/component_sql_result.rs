@@ -243,7 +243,7 @@ impl Component<TuiMsg, TuiUserEvent> for ComponentSQLResult {
             }) => Some(TuiMsg::DatabaseRequestByPage(0, 0)),
             Event::Keyboard(KeyEvent { code: Key::End, .. }) => {
                 Some(TuiMsg::DatabaseRequestByPage(
-                    self.page_upper_limit.saturating_add(1),
+                    self.page_size - 1,
                     self.page_upper_limit,
                 ))
             }
