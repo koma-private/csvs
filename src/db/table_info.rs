@@ -24,9 +24,9 @@ pub fn table_info(
     while let Some(row) = rows.next()? {
         let name: String = row.get(column_index_name)?;
         let data_type: String = row.get(column_index_data_type)?;
-        let notnull: isize = row.get(column_index_notnull)?;
+        let notnull: u8 = row.get(column_index_notnull)?;
         let dflt_value: Option<String> = row.get(column_index_dflt_value)?;
-        let pk: isize = row.get(column_index_pk)?;
+        let pk: u8 = row.get(column_index_pk)?;
 
         table_infos.push(TableInfo {
             name,
