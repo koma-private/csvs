@@ -56,7 +56,7 @@ where
             TuiId::AvailableTables => {
                 let mut temp = Vec::from([
                     ShortCut::new("Enter", "Select Table"),
-                    ShortCut::new("CTRL+I", "Table Info"),
+                    ShortCut::new("CTRL+T", "Table Info"),
                     ShortCut::new("↑↓", "Move Cursor"),
                     ShortCut::new("Home", "To Top"),
                     ShortCut::new("End", "To Bottom"),

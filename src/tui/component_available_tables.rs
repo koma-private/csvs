@@ -66,13 +66,15 @@ impl Component<TuiMsg, TuiUserEvent> for ComponentAvailableTables {
                 CmdResult::None
             }
             Event::Keyboard(KeyEvent {
-                code: Key::Char('i'),
+                code: Key::Char('t'),
                 modifiers: KeyModifiers::CONTROL,
             }) => {
                 if let Some(AttrValue::Table(table)) = self.query(Attribute::Content) {
                     if let Some(row) = table.get(self.component.states.list_index) {
                         if let Some(selected) = row.first() {
-                            return Some(TuiMsg::DatabaseRequestTableInfo(selected.content.clone()));
+                            return Some(TuiMsg::DatabaseRequestTableInfo(
+                                selected.content.clone(),
+                            ));
                         }
                     }
                 }

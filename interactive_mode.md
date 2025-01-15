@@ -22,7 +22,7 @@
 | Key Combination | Alt. | Description                                                         |
 |-----------------|------|---------------------------------------------------------------------|
 | Enter           |      | Select a table and auto-input `SELECT * FROM`.                      |
-| CTRL + I        |      | Display the columns of the selected table in the Table Info dialog. |
+| CTRL + T        |      | Display the columns of the selected table in the Table Info dialog. |
 | Up              |      | Move the selection cursor up.                                       |
 | Down            |      | Move the selection cursor down.                                     |
 | PageUp          |      | Scroll the selection list up.                                       |
