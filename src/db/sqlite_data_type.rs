@@ -1,4 +1,5 @@
 use std::fmt::{Display, Formatter};
+use std::str::FromStr;
 
 /// SQLite data types for mapping CSV data to SQLite-compatible types.
 #[derive(PartialEq, Clone, Copy, Debug)]
@@ -35,7 +36,7 @@ impl SqliteDataType {
         }
     }
 
-    /// Detects the type of a given string based on its format.
+    /// Detects the type of given string based on its format.
     ///
     /// # Arguments
     /// * `s` - Input string to analyze.
@@ -45,10 +46,12 @@ impl SqliteDataType {
     /// * `SqliteDataType` - The inferred data type.
     pub fn detect_type(s: &str, allow_leading_zeros: bool) -> Self {
         if is_valid_number(s, allow_leading_zeros) {
-            if s.contains(".") {
+            if i64::from_str(s).is_ok() {
+                Self::Integer
+            } else if f64::from_str(s).is_ok() {
                 Self::Real
             } else {
-                Self::Integer
+                Self::Text
             }
         } else {
             Self::Text
@@ -81,9 +84,8 @@ fn test_is_valid_number() {
     ];
     let leading_zeros_cases = vec!["001", "-00"];
     let negative_cases = vec![
-        "1a", "2..1", "..2", "--0",
-        // Contains space
-        " 10", "102 ", "4 5"
+        "1a", "2..1", "..2", "--0", // Contains space
+        " 10", "102 ", "4 5",
     ];
 
     for allow_leading_zeros_for_number in [true, false] {

@@ -89,7 +89,7 @@ pub fn execute_statements(
                             continue;
                         }
 
-                        let value: rusqlite::Result<Option<isize>> = row.get(index);
+                        let value: rusqlite::Result<Option<i64>> = row.get(index);
                         if let Ok(value) = value {
                             match value {
                                 None => {

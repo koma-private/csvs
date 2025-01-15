@@ -14,7 +14,7 @@ Refer to [Validating Number Document](validating_number.md) for details of how *
 3. Proceed to the next row and detect the data type of the cell in the same column.
 4. Compare the previously detected data type with the newly detected type based on the rules in the table below:
     - If the previously detected data type is `INTEGER` and the newly detected type is `REAL`, **csvs** updates the
-      column's data type to `REAL`
+      column's data type to `REAL` (decimal number)
     - If the previously detected data type is `REAL` and the newly detected type is `INTEGER`, **csvs** retains `REAL` as
       the column's data type.
 
@@ -51,6 +51,19 @@ If any empty cells are encountered in a column, it will be marked as nullable, a
 | Integer to Real |   `REAL`    |  `NOT NULL`   |
 | Integer to Text |   `TEXT`    |               |
 | Real to Text    |   `TEXT`    |  `NOT NULL`   |
+
+
+## Range of valid number
+
+**csvs** imports integer number as 64-bit signed type and imports decimal number as 64-bit floating-point type.
+If the number to be imported is overflow or underflow, **csvs** imports it as `TEXT` data.
+
+| Data type | Smallest finite         | Largest finite           |
+|-----------|-------------------------|--------------------------|
+| `INTEGER` | -2E+63                  | 2E+63−1                  |
+| `REAL`    | 1.7976931348623157E+308 | -1.7976931348623157E+308 |
+
+
 
 ## Conclusion
 
