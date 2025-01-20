@@ -1,4 +1,5 @@
 use crate::db::add_regexp_function::add_regexp_function;
+use rusqlite::config::DbConfig;
 use tracing::debug;
 
 /// Initialize SQLite database connection
@@ -16,6 +17,10 @@ pub fn initialize_database(
         }
     }
     .with_init(|conn| {
+        conn.set_db_config(DbConfig::SQLITE_DBCONFIG_ENABLE_FKEY, true)?;
+        conn.set_db_config(DbConfig::SQLITE_DBCONFIG_ENABLE_TRIGGER, true)?;
+        conn.set_db_config(DbConfig::SQLITE_DBCONFIG_ENABLE_VIEW, true)?;
+
         add_regexp_function(conn)
             .map_err(|err| rusqlite::Error::UserFunctionError(Box::from(err)))?;
         Ok(())
