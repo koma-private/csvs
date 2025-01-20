@@ -205,7 +205,7 @@ impl<'a> CsvParser<'a> {
 
             let sqlite_type = temp_types
                 .get(&header_index)
-                .context(format!("Database type at pos {} not found", header_index))?;
+                .unwrap_or(&SqliteDataType::Text); // Fallback to Text
 
             let not_null = if temp_nullable.contains_key(&header_index) {
                 ""
@@ -244,7 +244,7 @@ impl<'a> CsvParser<'a> {
                         .context(format!("Element at pos {} not found", element_index))?;
                     let sqlite_type = temp_types
                         .get(&element_index)
-                        .context(format!("Database type at pos {} not found", element_index))?;
+                        .unwrap_or(&SqliteDataType::Text); // Fallback to Text
 
                     match element {
                         None => {
