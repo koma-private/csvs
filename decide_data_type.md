@@ -1,25 +1,22 @@
 # Decide Data Type for Each Column
 
-**csvs** scans each row of the input CSV to determine the final data type for creating a table on SQLite.
-
-The following steps outline how **csvs** ensures the most accurate data type assignment for columns when importing CSV
-files into SQLite.
+**csvs** scans each row of the input CSV to determine the appropriate data type for columns in the SQLite database.
 
 Refer to [Validating Number Document](validating_number.md) for details of how **csvs** interprets input data.
 
-## Process
+## Process Overview
 
-1. Detect the data type of cell in the current row.
-2. If processing the first row of the CSV, save the detected data type.
-3. Proceed to the next row and detect the data type of the cell in the same column.
-4. Compare the previously detected data type with the newly detected type based on the rules in the table below:
-    - If the previously detected data type is `INTEGER` and the newly detected type is `REAL`, **csvs** updates the
-      column's data type to `REAL` (decimal number)
-    - If the previously detected data type is `REAL` and the newly detected type is `INTEGER`, **csvs** retains `REAL` as
-      the column's data type.
+1. **Detect Data Type**: Each cell in the current row is analyzed to determine its data type.
+2. **Initial Assignment**: For the first row, the detected data type is saved.
+3. **Comparison and Adjustment**: For subsequent rows, the detected data type is compared to the previously saved type,
+   and adjustments are made as needed:
+    - If the prior type is `INTEGER` and a `REAL` value is detected, the column type is updated to `REAL`.
+    - If the prior type is `REAL` and an `INTEGER` value is detected, the column type remains `REAL`.
+    - If a text value is encountered, the column type is set to `TEXT`.
 
-### Conversion Table
-The table below indicates whether a column's data type can convert from one type to another during the import process.
+### Data Type Conversion Table
+
+The table below outlines type conversions during the import process:
 
 | From / To | `INTEGER` | `REAL` | `TEXT` |
 |:---------:|:---------:|:------:|:------:|
@@ -27,11 +24,7 @@ The table below indicates whether a column's data type can convert from one type
 |  `REAL`   |    NO     |  YES   |  YES   |
 |  `TEXT`   |    NO     |   NO   |  YES   |
 
-## Example
-
-Below is an example demonstrating the input CSV and the final result.
-
-If any empty cells are encountered in a column, it will be marked as nullable, allowing `NULL` values in the database.
+## Example: Input CSV and Final SQLite Types
 
 ### Input CSV
 
@@ -41,7 +34,7 @@ If any empty cells are encountered in a column, it will be marked as nullable, a
 | 2 |      -0      |   -1.1    |     2     |        1        |                 |      A       |
 | 3 |      2       |    99     |   -0.9    |       0.3       |        C        |     -2.3     |
 
-### Final Data Type on SQLite Database
+### Final Data Types
 
 | Column Name     | SQLite Type | Allows `NULL` |
 |-----------------|:-----------:|:-------------:|
@@ -52,21 +45,32 @@ If any empty cells are encountered in a column, it will be marked as nullable, a
 | Integer to Text |   `TEXT`    |               |
 | Real to Text    |   `TEXT`    |  `NOT NULL`   |
 
+## Special Cases
 
-## Range of valid number
+### Handling Empty Cells
 
-**csvs** imports integer number as 64-bit signed type and imports decimal number as 64-bit floating-point type.
-If the number to be imported is overflow or underflow, **csvs** imports it as `TEXT` data.
+Columns with empty cells are treated as nullable, allowing `NULL` values in the database.
 
-| Data type | Smallest finite         | Largest finite           |
-|-----------|-------------------------|--------------------------|
-| `INTEGER` | -2E+63                  | 2E+63−1                  |
-| `REAL`    | 1.7976931348623157E+308 | -1.7976931348623157E+308 |
+### Number Ranges
 
+- `INTEGER`: Imported as a 64-bit signed type. Valid range is `-2^63` to `2^63-1`.
+- `REAL`: Imported as a 64-bit floating-point type. Valid range is approximately ± `1.7976931348623157E+308`.
+- Overflow or underflow values are imported as `TEXT`.
 
+## Valid and Invalid Numbers
 
-## Conclusion
+### Valid Number Formats
 
-By dynamically analyzing each column's content, **csvs** ensures accurate data type mapping while maintaining flexibility for nullable fields.
+- Examples: `0`, `-0`, `0.0`, `.120`, `10`, `-10.0`
 
-This behavior guarantees compatibility with SQLite and optimizes data handling for various use cases.
+### Invalid Number Formats
+
+- Examples: `1a`, `2..1`, `10` (leading space), `4 5` (spaces between digits)
+
+### Leading Zeros
+
+- Use the `--in-allow-leading-zeros` option to interpret values like `001` or `-00` as valid numbers.
+
+By dynamically analyzing column content, csvs ensures accurate data type assignments and optimal compatibility with
+SQLite databases.
+
