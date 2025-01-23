@@ -183,6 +183,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: Distributions.md
+          draft: true
           generate_release_notes: true
           files: |
             artifact/csvs_linux_aarch64.tar.gz
