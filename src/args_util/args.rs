@@ -36,39 +36,35 @@ pub struct Args {
     pub version: bool,                   // Display version flag
 }
 
-impl From<RawArgs> for Args {
+impl TryFrom<RawArgs> for Args {
+    type Error = anyhow::Error;
+
     /// Converts `RawArgs` to `Args` with validation.
-    fn from(value: RawArgs) -> Self {
+    fn try_from(value: RawArgs) -> anyhow::Result<Self> {
         // Parse SQL queries
-        let statements = query_to_statements(value.query_group.query, value.query_group.source)
-            .expect("Invalid SQL queries");
+        let statements = query_to_statements(value.query_group.query, value.query_group.source)?;
 
         // Validate input files
-        validate_in_files(&value.in_file).expect("Missing or invalid input files");
+        validate_in_files(&value.in_file)?;
 
         // Convert single-byte arguments
-        let in_comment = parse_optional_byte(&value.in_comment, "Invalid input comment character");
-        let in_delimiter =
-            parse_required_byte(&value.in_delimiter, "Invalid input delimiter").unwrap();
-        let out_delimiter =
-            parse_required_byte(&value.out_delimiter, "Invalid output delimiter").unwrap();
-        let in_escape = parse_optional_byte(&value.in_escape, "Invalid input escape character");
-        let in_quote = parse_required_byte(&value.in_quote, "Invalid input quote").unwrap();
-        let out_comment =
-            parse_optional_byte(&value.out_comment, "Invalid output comment character");
-        let out_escape = parse_optional_byte(&value.out_escape, "Invalid output escape character");
-        let out_quote = parse_required_byte(&value.out_quote, "Invalid output quote").unwrap();
+        let in_comment = parse_optional_byte(&value.in_comment)?;
+        let in_delimiter = parse_required_byte(&value.in_delimiter)?;
+        let out_delimiter = parse_required_byte(&value.out_delimiter)?;
+        let in_escape = parse_optional_byte(&value.in_escape)?;
+        let in_quote = parse_required_byte(&value.in_quote)?;
+        let out_comment = parse_optional_byte(&value.out_comment)?;
+        let out_escape = parse_optional_byte(&value.out_escape)?;
+        let out_quote = parse_required_byte(&value.out_quote)?;
 
         // Parse other arguments
         let in_trim = value.in_trim.into();
         let out_quote_style = value.out_quote_style.into();
-        let in_terminator =
-            parse_terminator(&value.in_terminator).expect("Invalid input terminator");
-        let out_terminator =
-            parse_terminator(&value.out_terminator).expect("Invalid output terminator");
-        validate_encoding(&value.out_encoding).expect("Invalid encoding label");
+        let in_terminator = parse_terminator(&value.in_terminator)?;
+        let out_terminator = parse_terminator(&value.out_terminator)?;
+        validate_encoding(&value.out_encoding)?;
 
-        Self {
+        Ok(Self {
             in_file: value.in_file,
             statements,
             help: value.help > 0,
@@ -97,7 +93,7 @@ impl From<RawArgs> for Args {
             out_without_header: value.out_without_header > 0,
             raw_id: value.raw_id,
             version: value.version > 0,
-        }
+        })
     }
 }
 
@@ -154,22 +150,20 @@ fn parse_terminator(source: &str) -> anyhow::Result<csv::Terminator> {
 }
 
 /// Parses an optional single-byte argument.
-fn parse_optional_byte(arg: &Option<String>, error_message: &str) -> Option<u8> {
+fn parse_optional_byte(arg: &Option<String>) -> anyhow::Result<Option<u8>> {
     match arg {
-        None => None,
+        None => Ok(None),
         Some(value) => {
-            let parsed = parse_required_byte(value, error_message).unwrap();
-            Some(parsed)
+            let parsed = parse_required_byte(value)?;
+            Ok(Some(parsed))
         }
     }
 }
 
 /// Parses a required single-byte argument.
-fn parse_required_byte(arg: &str, error_message: &str) -> anyhow::Result<u8> {
+fn parse_required_byte(arg: &str) -> anyhow::Result<u8> {
     let bytes = smashquote::unescape_bytes(arg.as_bytes())?;
-    let byte = bytes
-        .first()
-        .ok_or(anyhow::anyhow!(error_message.to_string()))?;
+    let byte = bytes.first().context("Cannot parse single byte")?;
     Ok(*byte)
 }
 

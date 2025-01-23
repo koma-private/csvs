@@ -14,22 +14,18 @@ pub fn list_available_tables(
     let conn = pool.get()?;
 
     // Query the SQLite master table for table names.
-    let mut stmt = conn.prepare("select name from sqlite_master where type='table'")?;
-    let column_count = stmt.column_count();
+    let mut stmt = conn.prepare("PRAGMA table_list")?;
+    let column_index_name = stmt.column_index("name")?;
     let mut rows = stmt.query([])?;
     let mut values: Vec<String> = vec![];
 
     // Iterate through the result rows.
     while let Some(row) = rows.next()? {
-        for index in 0..column_count {
-            let value: rusqlite::Result<String> = row.get(index);
+        let value: String = row.get(column_index_name)?;
 
-            if let Ok(value) = value {
-                // Exclude internal SQLite tables.
-                if !is_reserved_table_name(&value) {
-                    values.push(value);
-                }
-            }
+        // Exclude internal SQLite tables.
+        if !is_reserved_table_name(&value) {
+            values.push(value);
         }
     }
     Ok(values)

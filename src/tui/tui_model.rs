@@ -138,6 +138,8 @@ where
                     f,
                     popup_area(f.area(), 60, 3),
                 );
+                self.app
+                    .view(&TuiId::TableInfoDialog, f, popup_area(f.area(), 80, 20));
             })
             .is_ok());
     }
@@ -290,6 +292,10 @@ where
                     SubEventClause::User(TuiUserEvent::RequestDatabaseByPage(0, 0)),
                     SubClause::Always,
                 ),
+                Sub::new(
+                    SubEventClause::User(TuiUserEvent::RequestDatabaseTableInfo(String::new())),
+                    SubClause::Always,
+                ),
             ],
         )?;
 
@@ -337,6 +343,19 @@ where
                         .expect("Failed to send request for available tables");
                     None
                 }
+                TuiMsg::DatabaseRequestTableInfo(table_name) => {
+                    self.sender_user_event
+                        .send(Event::User(TuiUserEvent::RequestDatabaseTableInfo(
+                            table_name,
+                        )))
+                        .expect("Failed to send request for info of selected table");
+                    None
+                }
+                TuiMsg::TableInfoDialogClose => self.table_info_dialog_close(),
+                TuiMsg::TableInfoDialogShow(table_name, table_infos) => {
+                    self.table_info_dialog_show(table_name, table_infos)
+                }
+                TuiMsg::TableInfoColumnSelected(column) => self.table_info_column_selected(column),
                 TuiMsg::DatabaseRequestByQuery(query) => {
                     self.sql_input_history_save(&query);
                     self.sender_user_event
@@ -367,6 +386,7 @@ where
                     None
                 }
                 TuiMsg::SQLInputValue(value) => self.sql_input_value(value),
+                TuiMsg::SQLInputAppendValue(value) => self.sql_input_append_value(value),
                 TuiMsg::SQLInputHistoryForward => self.sql_input_history_forward(),
                 TuiMsg::SQLInputHistoryBack => self.sql_input_history_back(),
                 TuiMsg::ProgressDialogShow(message) => self.progress_dialog_show(message),

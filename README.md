@@ -4,11 +4,13 @@
 through an embedded [SQLite](https://www.sqlite.org/) engine. It is ideal for data analysts and developers who need
 SQL's flexibility to manage text-based data efficiently.
 
+[![GitHub Release](https://img.shields.io/github/actions/workflow/status/koma-private/csvs/release.yml)](https://github.com/koma-private/csvs)
 [![GitHub Tag](https://img.shields.io/github/v/tag/koma-private/csvs)](https://github.com/koma-private/csvs)
 [![Crates.io Version](https://img.shields.io/crates/v/csvs)](https://crates.io/crates/csvs)
 
 ![Banner of executing csvs](assets/usage.banner.png)
 ![Banner of interactive mode](assets/interactive.banner.png)
+![Banner of interactive mode](assets/interactive2.banner.png)
 
 - [Features](#features)
     - [SQL Power for CSV Files](#sql-power-for-csv-files)
@@ -41,6 +43,7 @@ SQL's flexibility to manage text-based data efficiently.
 
 Run advanced SQL queries, including `JOIN`, `GROUP BY`, `SUM()`, or `COUNT()` on CSV data.
 Gain unparalleled flexibility to query, filter, sort, group, and combine data compared to traditional spreadsheet tools.
+**csvs** also supports regular expressions in SQL queries. Refer to [Regular Expressions Document](regexp.md).
 
 ### Automatic Encoding Detection
 

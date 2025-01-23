@@ -1,3 +1,4 @@
+use crate::db::table_info::TableInfo;
 use crate::tui::component_message_dialog::ComponentMessageDialogType;
 use crate::tui::tui_id::TuiId;
 
@@ -8,6 +9,11 @@ pub enum TuiMsg {
     AppClose,
     /// Indicates the selected table in the available tables list.
     AvailableTablesSelected(String),
+    /// Show details of the selected table in the available tables list.
+    DatabaseRequestTableInfo(String),
+    TableInfoDialogClose,
+    TableInfoDialogShow(String, Vec<TableInfo>),
+    TableInfoColumnSelected(String),
     /// Closes the message dialog.
     MessageDialogClose,
     /// Displays a message dialog with a specific type and message.
@@ -35,6 +41,7 @@ pub enum TuiMsg {
     DatabaseRequestSaveResult(String),
     /// Updates the SQL input field with a new value.
     SQLInputValue(String),
+    SQLInputAppendValue(String),
     /// Navigates forward in the SQL input history.
     SQLInputHistoryForward,
     /// Navigates backward in the SQL input history.

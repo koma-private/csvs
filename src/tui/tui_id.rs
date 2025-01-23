@@ -22,6 +22,7 @@ pub enum TuiId {
     SQLResultFilenameInputDialog,
     /// Displays the shortcut menu for quick access to actions.
     ShortcutMenu,
+    TableInfoDialog,
 }
 
 impl TuiId {

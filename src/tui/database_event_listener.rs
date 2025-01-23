@@ -107,6 +107,9 @@ impl Component<TuiMsg, TuiUserEvent> for DatabaseEventListener {
             Event::User(TuiUserEvent::RequestDatabaseSaveResult(filename)) => {
                 self.sql_result_save_file(filename)
             }
+            Event::User(TuiUserEvent::RequestDatabaseTableInfo(table_name)) => {
+                self.table_info(&table_name)
+            }
             _ => {
                 None // Ignore unhandled events
             }

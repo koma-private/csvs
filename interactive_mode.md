@@ -19,15 +19,16 @@
 
 ### Available Tables
 
-| Key Combination | Alt. | Description                                    |
-|-----------------|------|------------------------------------------------|
-| Enter           |      | Select a table and auto-input `SELECT * FROM`. |
-| Up              |      | Move the selection cursor up.                  |
-| Down            |      | Move the selection cursor down.                |
-| PageUp          |      | Scroll the selection list up.                  |
-| PageDown        |      | Scroll the selection list down.                |
-| Home            |      | Jump to the top of the table list.             |
-| End             |      | Jump to the end of the table list.             |
+| Key Combination | Alt. | Description                                                         |
+|-----------------|------|---------------------------------------------------------------------|
+| Enter           |      | Select a table and auto-input `SELECT * FROM`.                      |
+| CTRL + T        |      | Display the columns of the selected table in the Table Info dialog. |
+| Up              |      | Move the selection cursor up.                                       |
+| Down            |      | Move the selection cursor down.                                     |
+| PageUp          |      | Scroll the selection list up.                                       |
+| PageDown        |      | Scroll the selection list down.                                     |
+| Home            |      | Jump to the top of the table list.                                  |
+| End             |      | Jump to the end of the table list.                                  |
 
 ### SQL Input
 
@@ -67,3 +68,16 @@
 | PageDown        |          | Scroll the content down.       |
 | Home            |          | Jump to the top of the result. |
 | End             |          | Jump to the end of the result. |
+
+### Table Info Dialog
+
+| Key Combination | Alt.     | Description                                                 |
+|-----------------|----------|-------------------------------------------------------------|
+| Esc             |          | Close the dialog                                            |
+| Enter           |          | Input the column name at the bottom of SQL Input component. |
+| Up              | CTRL + P | Move the cursor up.                                         |
+| Down            | CTRL + N | Move the cursor down.                                       |
+| PageUp          |          | Scroll the content up.                                      |
+| PageDown        |          | Scroll the content down.                                    |
+| Home            |          | Jump to the top of the result.                              |
+| End             |          | Jump to the end of the result.                              |
