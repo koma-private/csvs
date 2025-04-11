@@ -9,8 +9,8 @@ SQL's flexibility to manage text-based data efficiently.
 [![Crates.io Version](https://img.shields.io/crates/v/csvs)](https://crates.io/crates/csvs)
 
 ![Banner of executing csvs](assets/usage.banner.png)
-![Banner of interactive mode](assets/interactive.banner.png)
-![Banner of interactive mode](assets/interactive2.banner.png)
+![Banner of interactive mode](assets/interactive.banner1.png)
+![Banner of interactive mode](assets/interactive.banner2.png)
 
 - [Features](#features)
     - [SQL Power for CSV Files](#sql-power-for-csv-files)

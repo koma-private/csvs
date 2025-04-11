@@ -35,7 +35,8 @@ impl ComponentSQLInput<'_> {
                 .line_number_style(Style::default().fg(Color::Gray).bg(Color::DarkGray))
                 .max_histories(64)
                 .scroll_step(4)
-                .inactive(Style::default().fg(Color::DarkGray)),
+                .inactive(Style::default().fg(Color::DarkGray))
+                .layout_margin(0),  // Set margin of layout https://github.com/veeso/tui-realm-textarea/pull/8
         }
     }
 
